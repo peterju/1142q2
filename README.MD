@@ -107,27 +107,15 @@ project/
 - 為節省排版時間，考題已直接提供 `base.html`，請直接複製使用，勿修改其結構。
 :::
 
-:::info 🏷️ HTML5 語意化標籤速查表
-為配合 Pico CSS 的設計哲學，本作業使用標準 HTML5 標籤取代大量 `class`。以下為考題中實際會用到的核心標籤：
+:::info 🏷️ HTML5 語意化標籤提示
+為配合 Pico CSS 的設計哲學，頁面請優先使用標準 HTML5 標籤，例如：
 
-| 標籤 | 用途 | Pico CSS 對應效果 | 考題使用位置 |
-|------|------|-------------------|--------------|
-| `<header>` | 頁面或區塊頂部 | 自動調整間距與字體 | `base.html` 導航列外層、`welcome.html` 標題區 |
-| `<nav>` | 導航連結區 | 自動轉為橫向排列 | `base.html` 內含 `<ul><li>` 列表 |
-| `<main>` | 頁面主要內容 | 設定標準容器寬度 | `base.html`（每頁僅出現一次） |
-| `<footer>` | 頁面或區塊底部 | 自動對齊與留白 | `base.html` 頁尾、`index.html` 按鈕區 |
-| `<article>` | 獨立內容區塊 | **Pico 核心卡片容器**：自動加圓角、陰影、內距 | 各子模板的 `<div class="container">` 內容區 |
-| `<hgroup>` | 標題與副標題組合 | 優化 `h1`~`h6` 與 `p` 的間距 | `index.html` 首頁標題區 |
-| `<form>` / `<label>` / `<input>` / `<button>` | 表單與按鈕 | 自動美化輸入框、按鈕 hover 效果 | `register.html`、`login.html` |
-| `<table>` / `<thead>` / `<tbody>` / `<tr>` / `<th>` / `<td>` | 資料表格 | 自動加框線、斑马紋、hover 效果 | `users.html`、`welcome.html` |
-| `<hr>` | 水平分隔線 | 預設淺灰線與上下間距 | `base.html` 頁尾上方 |
-| `<small>` | 輔助說明文字 | 自動縮小字體與降低對比 | `base.html` 版權宣告 |
+- `article`：包住每頁主要內容
+- `form`、`label`、`input`、`button`：表單輸入與送出
+- `table`、`thead`、`tbody`、`tr`、`th`、`td`：會員資料表格
+- `header`、`footer`、`nav`：頁首、頁尾與導覽列
 
-💡 **實作提示**：
-1. **無需額外加 class**：Pico 會自動識別上述標籤並套用樣式，請直接撰寫語意標籤即可。
-2. `<article>` 是 Pico 的「萬能容器」：每個功能頁面（表單、結果、錯誤訊息）都建議用 `<article>` 包覆，可獲得完整的卡片視覺效果。
-3. **Jinja2 搭配建議**：子模板的 `{% block content %}` 內容，建議直接以 `<article>` 開頭與結尾，確保繼承後版面不會破版。
-4. 語意化標籤不僅提升程式可讀性，也有助於無障礙存取 (a11y) 與未來維護。
+只要結構清楚、頁面可正常閱讀與操作即可，不要求額外做複雜版面設計。
 :::
 
 ## JSON 資料結構 (`users.json`)
@@ -148,11 +136,42 @@ project/
 }
 ```
 
+## 作答範圍限制
+
+本次作業請以課堂已講授的 Flask 基礎內容完成，評分也將以課堂範圍為主。
+
+### 本次建議使用
+
+- Flask 基本路由與函式式 view function
+- `request.form`、`request.args`
+- `render_template`、`url_for`
+- Jinja2 模板繼承與基本過濾器
+- JSON 檔案讀寫
+- HTML 表單與 GET/POST 流程
+- 基本 `try/except` 錯誤處理
+
+### 本次請勿使用
+
+- 資料庫（如 SQLite、MySQL、PostgreSQL、MongoDB）
+- ORM 或資料庫套件（如 SQLAlchemy）
+- Session、Cookie 登入狀態管理
+- JavaScript framework 或額外前端套件
+- Flask-WTF、Blueprint、class-based view 等未授課內容
+- 複雜物件導向設計（OOP）或與課堂範例差異過大的架構
+
+### 評分說明
+
+- 評分重點為是否能用課堂教過的方法正確完成功能。
+- 使用超出課程範圍的技術，不會因此額外加分。
+- 若作答內容大量依賴未授課技術，導致無法對應課堂學習重點，將視情況扣分。
+
 ## 程式設計要求
 
 ### 1. 穩定回傳結構與函式封裝
 
-請將核心邏輯封裝為獨立函式，並**統一回傳 dict 結構**：
+請將核心邏輯盡量封裝為獨立函式，避免將所有判斷都直接寫在路由函式中。
+
+- 與表單驗證、登入驗證相關的函式，**建議**統一回傳 `dict` 結構：
 
 ```python
 # 成功範例
@@ -161,13 +180,16 @@ project/
 {"success": False, "error": "錯誤訊息"}
 ```
 
-- 函式不得依賴全域變數，所有資料必須透過參數傳入、`return` 傳出。
-- 需實作以下輔助函式：
-  - `init_json_file() -> None`：初始化 `users.json`
-  - `read_users() -> dict`：讀取 JSON 並回傳 dict
-  - `save_users( dict) -> bool`：寫入 JSON
-  - `validate_register(form_ dict) -> dict`：驗證註冊資料
+- 檔案讀寫類的輔助函式可維持自然型別，例如：`init_json_file(file_path: str) -> None`、`read_users(file_path: str) -> dict`、`save_users(file_path: str, data: dict) -> bool`。
+- 驗證與登入相關函式**建議**盡量不要依賴全域狀態；若能以參數傳入資料更佳。
+- 建議實作以下輔助函式：
+  - `init_json_file(file_path: str) -> None`：初始化 `users.json`
+  - `read_users(file_path: str) -> dict`：讀取 JSON 並回傳 dict
+  - `save_users(file_path: str, data: dict) -> bool`：寫入 JSON
+  - `validate_register(form_data: dict) -> dict`：驗證註冊資料
   - `verify_login(email: str, password: str, users: list) -> dict`：驗證登入
+- 可自行增加其他輔助函式，只要命名合理、用途清楚即可。
+- 若命名或參數設計與上列略有不同，只要程式結構清楚、功能正確即可。
 
 ### 2. 表單驗證規則
 
@@ -176,10 +198,13 @@ project/
 - 電話為選填，若有填寫則需為 10 碼數字且開頭為 `09`。
 - 密碼長度需介於 6~16 字元。
 - 帳號與 Email 不得與 JSON 中既有資料重複。
+- 本次小考**不要求前端驗證或 JavaScript 驗證**，僅需在**後端**完成欄位驗證即可。
+- 若驗證失敗，請導向錯誤頁或回傳明確錯誤訊息；重點是能清楚告知使用者失敗原因。
+- 若學生額外加入 HTML5 驗證屬性（如 `required`、`type="email"`）不扣分，但**不列為必備評分項目**。
 
 ### 3. 自訂過濾器
 
-在 `app.py` 中定義以下過濾器，並於樣板中實際使用：
+在 `app.py` 中定義自訂過濾器，並於樣板中實際使用。建議完成以下兩個：
 
 ```python
 @app.template_filter('mask_phone')
@@ -196,16 +221,18 @@ def format_tw_date(date_str: str) -> str:
 ### 4. 路由與樣板規範
 
 - 所有頁面需使用 `render_template` 渲染，並正確使用 `url_for` 產生連結。
-- 表單提交一律使用 `POST` 方法。
+- 顯示表單頁面使用 `GET`，表單送出一律使用 `POST` 方法。
 - **路由函式命名建議**：為避免與輔助函式衝突，路由函式建議加上 `_route` 後綴，例如：`register_route`, `login_route`, `users_list_route`, `welcome_route`, `error_route`。
 - **初始化時機**：`init_json_file()` 必須寫在模組層級（`if __name__` 之外），確保 `flask run` 匯入模組時自動執行。
+- 評分以「功能正確、流程順暢」為主，不會因命名風格與老師範例略有不同而直接扣分。
 
 ### 5. 程式碼規範
 
 - 遵循 PEP 8 格式。
 - 每個函式需撰寫簡短 docstring 說明功能與回傳值。
-- **使用 Python 3.10+ 內建型別提示**（如 `dict`, `list`, `str`, `bool`, `None`），**無需 `import typing`**。
+- **鼓勵**使用 Python 3.10+ 內建型別提示（如 `dict`, `list`, `str`, `bool`, `None`），**無需 `import typing`**。
 - 檔案讀寫需使用 `try/except` 精準捕捉 `FileNotFoundError` 或 `json.JSONDecodeError`。
+- 本次小考以 `FileNotFoundError` 與 `json.JSONDecodeError` 的處理為主，其餘例外不要求全面處理。
 
 ## 提示
 
@@ -238,7 +265,7 @@ def format_tw_date(date_str: str) -> str:
 
 | 項目                   | 比重 | 評分重點                                                                        |
 | ---------------------- | ---- | ------------------------------------------------------------------------------- |
-| **功能完整性**   | 50%  | 6 個核心路由運作正常；JSON 讀寫與初始資料正確；驗證規則落實                     |
-| **程式碼規範**   | 20%  | 穩定回傳結構、無全域依賴、PEP 8、docstring、Python 3.10+ 型別提示、精準例外處理 |
-| **樣板與過濾器** | 20%  | 正確使用樣板繼承、`url_for`、`request.form/args`、自訂過濾器實際渲染        |
-| **頁面體驗**     | 10%  | Pico 語義化標籤應用、必要 class 使用正確、表單清晰、響應式基礎                  |
+| **功能完整性**   | 60%  | 6 個核心路由運作正常；JSON 讀寫與初始資料正確；驗證規則落實                     |
+| **驗證與錯誤處理** | 20%  | 註冊與登入驗證合理；錯誤頁可正確顯示訊息；基本例外處理完整                    |
+| **樣板與頁面呈現** | 10%  | 正確使用樣板繼承、`url_for`、`request.form/args`，頁面可正常操作與閱讀        |
+| **程式碼品質**   | 10%  | 結構清楚、適度函式封裝、PEP 8、docstring，進階設計會列入加分參考               |

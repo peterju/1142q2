@@ -11,7 +11,7 @@
                 <tr>
                     <td>{{ u.username }}</td>
                     <td>{{ u.email }}</td>
-                    <td>{{ u.phone | default('未填寫') | mask_phone }}</td>
+                    <td>{{ u.phone | mask_phone }}</td>
                     <td>{{ u.birthdate | format_tw_date }}</td>
                 </tr>
                 {% else %}
