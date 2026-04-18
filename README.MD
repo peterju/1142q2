@@ -6,13 +6,13 @@
 注意事項
 
 - 本小考可參考書籍或網路上任何資料，惟不可以任何方式與第三者交流溝通，若有任何不誠實的投機行為，將依校規辦理，且當次的成績 0 分計算。
-- 本次小考請以 Git 上傳 GitHub，再將專案網址貼到【繳交表單連結】，GitHub 專案需完整包含所有檔案。
-- 如有專案設定 public 可能遭其他同學看到的疑慮，可設定為 private 再將老師的郵件加入你專案的合作開發，並於群組通知老師收信。
+- 本次小考請以 Git 上傳 GitHub，再將專案網址貼到 [【第2次小考作業】](https://forms.gle/VwADrUSboe2kJRKz6)，GitHub 專案需包含 README.md、LICENSE、.gitignore 等檔案與 About 描述。
+- 如有專案設定 public 可能遭其他同學看到的疑慮，可設定為 private 再將老師的郵件 peterju.tw@gmail.com 加入你專案的合作開發，並於群組通知老師收信。
 - 繳交時間到之後請勿再更新答案，如超過繳交時間仍更新，則老師會參考繳交時間前最後一次 commit 的答案。
   :::
 
 :::danger
-請於 【日期】中午 12:00 以前完成本次作業。
+請於 2026 年 4 月 23 日 23:59 以前完成本次小考作業。
 :::
 
 # 簡易會員系統
@@ -21,26 +21,62 @@
 
 ## 系統功能需求
 
-1. **首頁（`/`）**：顯示系統標題與簡介，提供「會員清單」、「登入」、「註冊」的連結。
+1. **首頁（`/`）**：顯示系統標題與簡介，提供「登入」、「註冊」的連結。
+    ![image](https://hackmd.io/_uploads/B1kScVWa-g.png)
 2. **註冊功能（`/register`）**：
    - GET：顯示註冊表單（帳號、Email、密碼、電話、出生日期）。
    - POST：驗證表單資料。若通過驗證，將資料存入 `users.json`，並重定向至登入頁；若失敗，導向錯誤頁。
+![image](https://hackmd.io/_uploads/Syr8cN-T-e.png)
 3. **登入功能（`/login`）**：
    - GET：顯示登入表單（Email、密碼）。
    - POST：驗證 Email 與密碼是否匹配 `users.json` 中的記錄。若匹配，重定向至歡迎頁 `/welcome/<username>`；若失敗，導向錯誤頁。
+![image](https://hackmd.io/_uploads/HJBY9V-6-g.png)
 4. **歡迎頁（`/welcome/<username>`）**：
    - 根據 URL 中的 `username` 從 JSON 查詢該會員資料並顯示。
-   - 提供「返回首頁」與「查看會員清單」連結。
+   - 提供「查看會員清單」與「返回首頁」連結。
+![image](https://hackmd.io/_uploads/HJET94ZTbl.png)
 5. **會員清單（`/users`）**：
    - GET：讀取 `users.json`，以表格列出所有會員（帳號、Email、電話、出生日期）。
    - **注意**：本清單僅供瀏覽，不提供修改與刪除功能；密碼欄位不得顯示於網頁上。
+![image](https://hackmd.io/_uploads/ByjJi4bTWg.png)
 6. **統一錯誤頁（`/error`）**：
    - 接收 `message` 參數（透過 `request.args`），顯示錯誤訊息。
    - 提供「返回前一頁」與「返回首頁」連結。
+![image](https://hackmd.io/_uploads/r1hMsEWabl.png)
+
+## 系統流程
+```mermaid
+flowchart TD
+    Home["首頁 /"]
+    Home --> Register["註冊 /register"]
+    Home --> Login["登入 /login"]
+
+    Register --> RegPost["POST /register"]
+    RegPost --> RegOK{"成功?"}
+    RegOK -->|否| Error["錯誤頁 /error"]
+    RegOK -->|是| Save["寫入 users.json"]
+    Save --> Login
+
+    Login --> LoginPost["POST /login"]
+    LoginPost --> LoginOK{"成功?"}
+    LoginOK -->|否| Error
+    LoginOK -->|是| Welcome["歡迎頁 /welcome/<username>"]
+
+    Welcome -->|可查看| Users["會員清單 /users"]
+    Welcome -->|可返回| Home
+    Users -->|可返回| Home
+    Error -->|可返回| Home
+
+    %% 藍線：主要前進/成功流程
+    linkStyle 0,1,2,3,5,6,7,8,10 stroke:#2563EB,stroke-width:2.5px;
+    %% 綠線：頁面導覽
+    linkStyle 11,12,13,14 stroke:#16A34A,stroke-width:2.5px;
+    %% 紅線：失敗流程
+    linkStyle 4,9 stroke:#DC2626,stroke-width:2.5px;
+```
 
 ## 專案結構
-
-請嚴格依照以下結構建立專案：
+請依照以下結構建立專案：
 
 ```
 project/
@@ -236,8 +272,8 @@ def format_tw_date(date_str: str) -> str:
 
 ## 提示
 
-- 講義第五章強調：防呆與例外處理應精準，不建議使用裸 `except`。
-- 講義第一章強調：參數進，return 出；不要偷拿外面的資料。
+- Python 基礎 (Flask 先修指南) 講義第五章強調：防呆與例外處理應精準，不建議使用裸 `except`。
+- Python 基礎 (Flask 先修指南)講義第一章強調：參數進，return 出；不要偷拿外面的資料。
 - 讀取 JSON 範例：
   ```python
   import json

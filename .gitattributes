@@ -1,0 +1,7 @@
+# Normalize the project's common text files to CRLF on checkout.
+*.md text eol=crlf
+*.py text eol=crlf
+*.srt text eol=crlf
+*.txt text eol=crlf
+*.toml text eol=crlf
+*.yaml text eol=crlf
