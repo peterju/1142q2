@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<article>
+    <hgroup>
+        <h1>{{ title }}</h1>
+        <p>本系統採用 JSON 檔案儲存資料，模擬無狀態 Web 請求流程。</p>
+    </hgroup>
+    <footer>
+        <a href="{{ url_for('register_route') }}" role="button">📝 立即註冊</a>
+        <a href="{{ url_for('login_route') }}" role="button" class="secondary">🔑 會員登入</a>
+        <a href="{{ url_for('users_list_route') }}" role="button" class="outline">📋 查看清單</a>
+    </footer>
+</article>
+{% endblock %}

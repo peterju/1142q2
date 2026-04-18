@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<article>
+    <header><h2>歡迎，{{ user.username }}！🎉</h2></header>
+    <table>
+        <thead><tr><th>欄位</th><th>內容</th></tr></thead>
+        <tbody>
+            <tr><td>Email</td><td>{{ user.email }}</td></tr>
+            <tr><td>電話</td><td>{{ user.phone | mask_phone }}</td></tr>
+            <tr><td>出生日期</td><td>{{ user.birthdate | format_tw_date }}</td></tr>
+        </tbody>
+    </table>
+    <footer>
+        <a href="{{ url_for('users_list_route') }}" role="button" class="secondary">查看會員清單</a>
+        <a href="{{ url_for('index') }}" role="button" class="outline">返回首頁</a>
+    </footer>
+</article>
+{% endblock %}

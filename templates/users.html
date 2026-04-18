@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<article>
+    <h2>{{ title }}</h2>
+    <div class="overflow-auto">
+        <table>
+            <thead><tr><th>帳號</th><th>Email</th><th>電話</th><th>出生日期</th></tr></thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>{{ u.username }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.phone | default('未填寫') | mask_phone }}</td>
+                    <td>{{ u.birthdate | format_tw_date }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">尚無會員資料</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</article>
+{% endblock %}

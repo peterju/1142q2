@@ -1,0 +1,4 @@
+/* Pico 已處理大部分樣式，此處僅補充微調 */
+main { padding-top: 2rem; }
+article { max-width: 800px; margin: 0 auto; }
+table { margin-top: 1rem; }

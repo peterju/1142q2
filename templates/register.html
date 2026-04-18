@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<article>
+    <h2>{{ title }}</h2>
+    <form method="post">
+        <label>帳號 <input type="text" name="username" required></label>
+        <label>Email <input type="email" name="email" required></label>
+        <label>密碼 <input type="password" name="password" required minlength="6" maxlength="16"></label>
+        <label>電話 (選填) <input type="tel" name="phone" placeholder="09XXXXXXXX"></label>
+        <label>出生日期 <input type="date" name="birthdate" required></label>
+        <button type="submit">送出註冊</button>
+    </form>
+</article>
+{% endblock %}
