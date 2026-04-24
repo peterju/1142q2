@@ -6,13 +6,13 @@
 注意事項
 
 - 本小考可參考書籍或網路上任何資料，惟不可以任何方式與第三者交流溝通，若有任何不誠實的投機行為，將依校規辦理，且當次的成績 0 分計算。
-- 本次小考請以 Git 上傳 GitHub，再將專案網址貼到 [【第2次小考作業】](https://forms.gle/VwADrUSboe2kJRKz6)，GitHub 專案需包含 README.md、LICENSE、.gitignore 等檔案與 About 描述。
+- 本次小考請以 Git 上傳 GitHub，再將專案網址貼到 [【第2次小考作業】](https://forms.gle/VwADrUSboe2kJRKz6)。GitHub 專案需包含 README.md、LICENSE、.gitignore 等檔案，並完成 About 描述。
 - 如有專案設定 public 可能遭其他同學看到的疑慮，可設定為 private 再將老師的郵件 peterju.tw@gmail.com 加入你專案的合作開發，並於群組通知老師收信。
 - 繳交時間到之後請勿再更新答案，如超過繳交時間仍更新，則老師會參考繳交時間前最後一次 commit 的答案。
   :::
 
 :::danger
-請於 2026 年 4 月 23 日 23:59 以前完成本次小考作業。
+請於 2026 年 4 月 23 日 23:59 前完成本次小考作業。
 :::
 
 # 簡易會員系統
@@ -117,7 +117,6 @@ project/
             </ul>
             <ul>
                 <li><a href="{{ url_for('index') }}">首頁</a></li>
-                <li><a href="{{ url_for('users_list_route') }}">會員清單</a></li>
                 <li><a href="{{ url_for('login_route') }}">登入</a></li>
                 <li><a href="{{ url_for('register_route') }}">註冊</a></li>
             </ul>
@@ -174,9 +173,9 @@ project/
 
 ## 作答範圍限制
 
-本次作業請以課堂已講授的 Flask 基礎內容完成，評分也將以課堂範圍為主。
+本次作業請以課堂已講授的 Flask 基礎內容完成，評分亦以課堂範圍為主。
 
-### 本次建議使用
+### 建議使用之內容
 
 - Flask 基本路由與函式式 view function
 - `request.form`、`request.args`
@@ -186,7 +185,7 @@ project/
 - HTML 表單與 GET/POST 流程
 - 基本 `try/except` 錯誤處理
 
-### 本次請勿使用
+### 請勿使用之內容
 
 - 資料庫（如 SQLite、MySQL、PostgreSQL、MongoDB）
 - ORM 或資料庫套件（如 SQLAlchemy）
@@ -201,66 +200,122 @@ project/
 - 使用超出課程範圍的技術，不會因此額外加分。
 - 若作答內容大量依賴未授課技術，導致無法對應課堂學習重點，將視情況扣分。
 
+## 命名與介面規範
+
+為避免程式與題目提供之模板無法正確對應，本作業中以下項目請保持一致。
+
+### 1. 檔名與目錄結構
+
+- 主程式檔名必須為 `app.py`
+- 樣板檔案必須放在 `templates/`
+- 樣式檔必須為 `static/css/style.css`
+- 使用者資料檔必須為 `users.json`
+
+### 2. JSON 結構
+
+- `users.json` 最外層必須為一個 `dict`
+- 最外層 key 必須為 `users`
+- 每筆會員資料必須包含以下欄位名稱：
+  - `username`
+  - `email`
+  - `password`
+  - `phone`
+  - `birthdate`
+
+### 3. 路由網址
+
+以下路由網址必須完全一致：
+
+- `/`
+- `/register`
+- `/login`
+- `/welcome/<username>`
+- `/users`
+- `/error`
+
+### 4. 路由函式名稱
+
+請使用以下路由函式名稱，避免 `url_for()` 對應不上：
+
+- `index`
+- `register_route`
+- `login_route`
+- `welcome_route`
+- `users_list_route`
+- `error_route`
+
+### 5. 輔助函式名稱與簽名
+
+請依照以下名稱與參數實作輔助函式：
+
+```python
+def init_json_file(file_path: str) -> None:
+    ...
+
+def read_users(file_path: str) -> dict:
+    ...
+
+def save_users(file_path: str, data: dict) -> bool:
+    ...
+
+def validate_register(form_data: dict, users: list) -> dict:
+    ...
+
+def verify_login(email: str, password: str, users: list) -> dict:
+    ...
+```
+
+### 6. 驗證函式回傳格式
+
+`validate_register()` 與 `verify_login()` 請統一回傳 `dict`，格式如下：
+
+```python
+# 成功
+{"success": True, "data": {...}}
+
+# 失敗
+{"success": False, "error": "錯誤訊息"}
+```
+
+### 7. 自訂過濾器名稱
+
+以下過濾器名稱請固定：
+
+- `mask_phone`
+- `format_tw_date`
+
 ## 程式設計要求
 
 ### 1. 穩定回傳結構與函式封裝
 
-請將核心邏輯盡量封裝為獨立函式，避免將所有判斷都直接寫在路由函式中。
+請將核心邏輯盡量封裝為獨立函式，避免將所有判斷直接寫在路由函式中。
 
-- 與表單驗證、登入驗證相關的函式，**建議**統一回傳 `dict` 結構：
-
-```python
-# 成功範例
-{"success": True, "data": {...}}
-# 失敗範例
-{"success": False, "error": "錯誤訊息"}
-```
-
-- 檔案讀寫類的輔助函式可維持自然型別，例如：`init_json_file(file_path: str) -> None`、`read_users(file_path: str) -> dict`、`save_users(file_path: str, data: dict) -> bool`。
-- 驗證與登入相關函式**建議**盡量不要依賴全域狀態；若能以參數傳入資料更佳。
-- 建議實作以下輔助函式：
-  - `init_json_file(file_path: str) -> None`：初始化 `users.json`
-  - `read_users(file_path: str) -> dict`：讀取 JSON 並回傳 dict
-  - `save_users(file_path: str, data: dict) -> bool`：寫入 JSON
-  - `validate_register(form_data: dict) -> dict`：驗證註冊資料
-  - `verify_login(email: str, password: str, users: list) -> dict`：驗證登入
-- 可自行增加其他輔助函式，只要命名合理、用途清楚即可。
-- 若命名或參數設計與上列略有不同，只要程式結構清楚、功能正確即可。
+- 請依照上方「命名與介面規範」實作指定的輔助函式與回傳格式。
+- 檔案讀寫類的輔助函式可維持自然型別，例如：`None`、`dict`、`bool`。
+- 驗證與登入相關函式請盡量不要依賴全域狀態，所需資料應透過參數傳入。
+- 可自行增加其他輔助函式，但不得省略題目指定之函式。
 
 ### 2. 表單驗證規則
-
 - 帳號、Email、密碼、出生日期為必填（不可為空或純空白）。
 - Email 必須包含 `@` 與 `.`。
 - 電話為選填，若有填寫則需為 10 碼數字且開頭為 `09`。
 - 密碼長度需介於 6~16 字元。
 - 帳號與 Email 不得與 JSON 中既有資料重複。
-- 本次小考**不要求前端驗證或 JavaScript 驗證**，僅需在**後端**完成欄位驗證即可。
+- 本次小考**不要求前端驗證或 JavaScript 驗證**，僅需在**後端**完成欄位驗證即可，後端也無需安裝與驗證有關的套件。
 - 若驗證失敗，請導向錯誤頁或回傳明確錯誤訊息；重點是能清楚告知使用者失敗原因。
 - 若學生額外加入 HTML5 驗證屬性（如 `required`、`type="email"`）不扣分，但**不列為必備評分項目**。
 
 ### 3. 自訂過濾器
 
-在 `app.py` 中定義自訂過濾器，並於樣板中實際使用。建議完成以下兩個：
-
-```python
-@app.template_filter('mask_phone')
-def mask_phone(phone: str) -> str:
-    """將電話中間 4 碼替換為星號，例：0912345678 -> 0912****78"""
-    ...
-
-@app.template_filter('format_tw_date')
-def format_tw_date(date_str: str) -> str:
-    """將 YYYY-MM-DD 轉為民國格式，例：2025-05-23 -> 民國114年05月23日"""
-    ...
-```
+請在 `app.py` 中定義自訂過濾器，並於樣板中實際使用。過濾器名稱請依照上方「命名與介面規範」固定為 `mask_phone` 與 `format_tw_date`。
 
 ### 4. 路由與樣板規範
 
 - 所有頁面需使用 `render_template` 渲染，並正確使用 `url_for` 產生連結。
 - 顯示表單頁面使用 `GET`，表單送出一律使用 `POST` 方法。
-- **路由函式命名建議**：為避免與輔助函式衝突，路由函式建議加上 `_route` 後綴，例如：`register_route`, `login_route`, `users_list_route`, `welcome_route`, `error_route`。
+- 路由函式名稱請依照上方「命名與介面規範」實作。
 - **初始化時機**：`init_json_file()` 必須寫在模組層級（`if __name__` 之外），確保 `flask run` 匯入模組時自動執行。
-- 評分以「功能正確、流程順暢」為主，不會因命名風格與老師範例略有不同而直接扣分。
+- 請勿任意更改題目提供之模板中 `url_for()` 所對應的端點名稱。
 
 ### 5. 程式碼規範
 
@@ -272,8 +327,8 @@ def format_tw_date(date_str: str) -> str:
 
 ## 提示
 
-- Python 基礎 (Flask 先修指南) 講義第五章強調：防呆與例外處理應精準，不建議使用裸 `except`。
-- Python 基礎 (Flask 先修指南)講義第一章強調：參數進，return 出；不要偷拿外面的資料。
+- Python 基礎（Flask 先修指南）講義第五章強調：防呆與例外處理應精準，不建議使用裸 `except`。
+- Python 基礎（Flask 先修指南）講義第一章強調：參數進，return 出；不要偷拿外部資料。
 - 讀取 JSON 範例：
   ```python
   import json
