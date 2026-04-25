@@ -6,13 +6,6 @@
       "password": "admin123",
       "phone": "0912345678",
       "birthdate": "1990-01-01"
-    },
-    {
-      "username": "peterju",
-      "email": "peterju.tw@gmail.com",
-      "password": "123456",
-      "phone": "0936279195",
-      "birthdate": "2026-04-08"
     }
   ]
 }

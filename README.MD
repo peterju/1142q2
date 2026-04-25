@@ -22,29 +22,30 @@
 ## 系統功能需求
 
 1. **首頁（`/`）**：顯示系統標題與簡介，提供「登入」、「註冊」的連結。
-    ![image](https://hackmd.io/_uploads/B1kScVWa-g.png)
+   ![image](https://hackmd.io/_uploads/B1YWNUqp-x.png)
 2. **註冊功能（`/register`）**：
    - GET：顯示註冊表單（帳號、Email、密碼、電話、出生日期）。
    - POST：驗證表單資料。若通過驗證，將資料存入 `users.json`，並重定向至登入頁；若失敗，導向錯誤頁。
-![image](https://hackmd.io/_uploads/Syr8cN-T-e.png)
+     ![image](https://hackmd.io/_uploads/BJDHQ8cpWx.png)
 3. **登入功能（`/login`）**：
    - GET：顯示登入表單（Email、密碼）。
    - POST：驗證 Email 與密碼是否匹配 `users.json` 中的記錄。若匹配，重定向至歡迎頁 `/welcome/<username>`；若失敗，導向錯誤頁。
-![image](https://hackmd.io/_uploads/HJBY9V-6-g.png)
+     ![image](https://hackmd.io/_uploads/Skq87LqpZg.png)
 4. **歡迎頁（`/welcome/<username>`）**：
    - 根據 URL 中的 `username` 從 JSON 查詢該會員資料並顯示。
    - 提供「查看會員清單」與「返回首頁」連結。
-![image](https://hackmd.io/_uploads/HJET94ZTbl.png)
+     ![image](https://hackmd.io/_uploads/rJYd78qa-g.png)
 5. **會員清單（`/users`）**：
    - GET：讀取 `users.json`，以表格列出所有會員（帳號、Email、電話、出生日期）。
    - **注意**：本清單僅供瀏覽，不提供修改與刪除功能；密碼欄位不得顯示於網頁上。
-![image](https://hackmd.io/_uploads/ByjJi4bTWg.png)
+     ![image](https://hackmd.io/_uploads/r1t07L5aWl.png)
 6. **統一錯誤頁（`/error`）**：
    - 接收 `message` 參數（透過 `request.args`），顯示錯誤訊息。
    - 提供「返回前一頁」與「返回首頁」連結。
-![image](https://hackmd.io/_uploads/r1hMsEWabl.png)
+     ![image](https://hackmd.io/_uploads/BJzlEIcp-e.png)
 
 ## 系統流程
+
 ```mermaid
 flowchart TD
     Home["首頁 /"]
@@ -76,6 +77,7 @@ flowchart TD
 ```
 
 ## 專案結構
+
 請依照以下結構建立專案：
 
 ```
@@ -102,34 +104,38 @@ project/
 ```html
 <!DOCTYPE html>
 <html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}會員系統{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
     <header class="container">
-        <nav>
-            <ul>
-                <li><strong>👥 會員系統</strong></li>
-            </ul>
-            <ul>
-                <li><a href="{{ url_for('index') }}">首頁</a></li>
-                <li><a href="{{ url_for('login_route') }}">登入</a></li>
-                <li><a href="{{ url_for('register_route') }}">註冊</a></li>
-            </ul>
-        </nav>
+      <nav>
+        <ul>
+          <li><strong>👥 會員系統</strong></li>
+        </ul>
+        <ul>
+          <li><a href="{{ url_for('index') }}">首頁</a></li>
+          <li><a href="{{ url_for('login_route') }}">登入</a></li>
+          <li><a href="{{ url_for('register_route') }}">註冊</a></li>
+        </ul>
+      </nav>
     </header>
-    <main class="container">
-        {% block content %}{% endblock %}
-    </main>
+    <main class="container">{% block content %}{% endblock %}</main>
     <footer class="container">
-        <hr>
-        <p><small>1132 Web 程式設計 - 第 2 次小考</small></p>
+      <hr />
+      <p><small>1142 Web 程式設計 - 第 2 次小考</small></p>
     </footer>
-</body>
+  </body>
 </html>
 ```
 
@@ -140,7 +146,7 @@ project/
 - **表格響應式**：若表格欄位較多，請在外層包裹 `<div class="overflow-auto">` 以支援手機橫向滑動。
 - **避免使用 Bootstrap 語法**：本作業不使用 `.row`, `.col`, `.card`, `.btn-primary` 等類別，請直接依賴 `<article>`, `<form>`, `<button>` 等語義化標籤。
 - 為節省排版時間，考題已直接提供 `base.html`，請直接複製使用，勿修改其結構。
-:::
+  :::
 
 :::info 🏷️ HTML5 語意化標籤提示
 為配合 Pico CSS 的設計哲學，頁面請優先使用標準 HTML5 標籤，例如：
@@ -296,6 +302,7 @@ def verify_login(email: str, password: str, users: list) -> dict:
 - 可自行增加其他輔助函式，但不得省略題目指定之函式。
 
 ### 2. 表單驗證規則
+
 - 帳號、Email、密碼、出生日期為必填（不可為空或純空白）。
 - Email 必須包含 `@` 與 `.`。
 - 電話為選填，若有填寫則需為 10 碼數字且開頭為 `09`。
@@ -354,9 +361,9 @@ def verify_login(email: str, password: str, users: list) -> dict:
 
 ## 評分標準
 
-| 項目                   | 比重 | 評分重點                                                                        |
-| ---------------------- | ---- | ------------------------------------------------------------------------------- |
-| **功能完整性**   | 60%  | 6 個核心路由運作正常；JSON 讀寫與初始資料正確；驗證規則落實                     |
-| **驗證與錯誤處理** | 20%  | 註冊與登入驗證合理；錯誤頁可正確顯示訊息；基本例外處理完整                    |
-| **樣板與頁面呈現** | 10%  | 正確使用樣板繼承、`url_for`、`request.form/args`，頁面可正常操作與閱讀        |
-| **程式碼品質**   | 10%  | 結構清楚、適度函式封裝、PEP 8、docstring，進階設計會列入加分參考               |
+| 項目               | 比重 | 評分重點                                                               |
+| ------------------ | ---- | ---------------------------------------------------------------------- |
+| **功能完整性**     | 60%  | 6 個核心路由運作正常；JSON 讀寫與初始資料正確；驗證規則落實            |
+| **驗證與錯誤處理** | 20%  | 註冊與登入驗證合理；錯誤頁可正確顯示訊息；基本例外處理完整             |
+| **樣板與頁面呈現** | 10%  | 正確使用樣板繼承、`url_for`、`request.form/args`，頁面可正常操作與閱讀 |
+| **程式碼品質**     | 10%  | 結構清楚、適度函式封裝、PEP 8、docstring，進階設計會列入加分參考       |

@@ -1,10 +1,5 @@
 # 自訂排除項目
-*.mp4
-*.srt
-*.txt
-config.toml
-*.rnnn
-WhisperDesktop/
+users.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
